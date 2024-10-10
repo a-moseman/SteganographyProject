@@ -29,6 +29,9 @@ public class ProcessingParameters {
         this.target = target;
     }
 
+    /**
+     * Builder for processing parameters.
+     */
     public static class Builder {
         private ProcessingType type = null;
         private boolean compression = false;
@@ -44,38 +47,66 @@ public class ProcessingParameters {
             return this;
         }
 
-        public Builder setCompression(boolean compression) {
+        /**
+         * Enable compression for the parameters.
+         * @throws IllegalArgumentException if compression was already enabled.
+         * @return the builder.
+         */
+        public Builder enableCompression() {
             if (this.compression) {
-                throw new IllegalArgumentException("Compression already enabled.");
+                throw new IllegalArgumentException("Compression is already enabled.");
             }
-            this.compression = compression;
+            this.compression = true;
             return this;
         }
 
-        public Builder setPassword(Optional<String> password) {
+        /**
+         * Set the password file path for the parameters.
+         * @param password the password file path
+         * @throws IllegalArgumentException if the password file path is already set.
+         * @return the builder.
+         */
+        public Builder setPassword(String password) {
             if (this.password.isPresent()) {
-                throw new IllegalArgumentException("Password already set.");
+                throw new IllegalArgumentException("Password file path is already set.");
             }
-            this.password = password;
+            this.password = Optional.of(password);
             return this;
         }
 
+        /**
+         * Set the source file path(s) for the parameters.
+         * @param source the source file path(s).
+         * @throws IllegalArgumentException if the source file path(s) are already set.
+         * @return the builder.
+         */
         public Builder setSource(String[] source) {
             if (this.source != null) {
-                throw new IllegalArgumentException("Source file paths already set.");
+                throw new IllegalArgumentException("Source file path(s) are already set.");
             }
             this.source = source;
             return this;
         }
 
+        /**
+         * Set the target file path(s) for the parameters.
+         * @param target the target file path(s).
+         * @throws IllegalArgumentException if the target file path(s) are already set.
+         * @return the builder.
+         */
         public Builder setTarget(String[] target) {
             if (this.target != null) {
-                throw new IllegalArgumentException("Target file paths already set.");
+                throw new IllegalArgumentException("Target file path(s) are already set.");
             }
             this.target = target;
             return this;
         }
 
+        /**
+         * Build the processing parameters.
+         * @throws IllegalArgumentException if the provided arguments are invalid.
+         * @return the processing parameters.
+         */
         public ProcessingParameters build() {
             if (type == null) {
                 throw new IllegalArgumentException("Processing type is not set.");

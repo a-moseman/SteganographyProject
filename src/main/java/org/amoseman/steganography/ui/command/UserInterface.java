@@ -3,8 +3,9 @@ package org.amoseman.steganography.ui.command;
 import org.amoseman.steganography.processing.parameters.ProcessingType;
 import org.amoseman.steganography.processing.parameters.ProcessingParameters;
 
-import java.util.Optional;
-
+/**
+ * Provides command line argument parsing functionality.
+ */
 public class UserInterface {
     public static final String ANALYZE = "analyze";
     public static final String ENCODE = "encode";
@@ -16,6 +17,11 @@ public class UserInterface {
     public static final String TARGET_ARG = ARG_PREFIX + "target";
 
 
+    /**
+     * Convert a command string into a ProcessingType.
+     * @param command the command.
+     * @return the processing type.
+     */
     public static ProcessingType fromCommand(String command) {
         return switch (command) {
             case ANALYZE -> ProcessingType.ANALYZE;
@@ -25,6 +31,12 @@ public class UserInterface {
         };
     }
 
+    /**
+     * Parse the provided arguments.
+     * @param args the arguments.
+     * @throws IllegalArgumentException if the arguments are invalid.
+     * @return the processing parameters.
+     */
     public ProcessingParameters run(String... args) {
         if (args.length == 0) {
             throw new IllegalArgumentException("No arguments provided.");
@@ -47,17 +59,17 @@ public class UserInterface {
         return builder.build();
     }
 
-    public int applyArg(String[] args, int index, String arg, ProcessingParameters.Builder builder) {
+    private int applyArg(String[] args, int index, String arg, ProcessingParameters.Builder builder) {
         return switch (arg) {
             case COMPRESSION_ARG -> {
-                builder.setCompression(true);
+                builder.enableCompression();
                 yield index + 1;
             }
             case PASSWORD_ARG -> {
                 if (index + 1 == args.length) {
                     throw new IllegalArgumentException("Expected password");
                 }
-                builder.setPassword(Optional.of(args[index + 1]));
+                builder.setPassword(args[index + 1]);
                 yield index + 2;
             }
             case SOURCE_ARG -> {
@@ -80,6 +92,12 @@ public class UserInterface {
         };
     }
 
+    /**
+     * Finds a subsequence of arguments between two arguments.
+     * @param args the arguments.
+     * @param start the starting index of subsequence.
+     * @return the subsequence.
+     */
     public String[] argsTillNextTag(String[] args, int start) {
         int end = args.length;
         for (int i = start; i < args.length; i++) {
@@ -93,6 +111,13 @@ public class UserInterface {
         return sub;
     }
 
+    /**
+     * Removes the first n arguments from the array of arguments.
+     * @param n the number of arguments to remove.
+     * @param args the arguments to reduce.
+     * @throws IllegalArgumentException if n is negative or the length of the reduced arguments would be negative.
+     * @return the reduced arguments.
+     */
     public String[] reduce(int n, String... args) {
         if (args.length - n < 0) {
             throw new IllegalArgumentException("Can not reduce arguments to length less than 0.");
