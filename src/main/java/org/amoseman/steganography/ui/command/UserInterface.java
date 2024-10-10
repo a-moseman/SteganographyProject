@@ -1,6 +1,6 @@
 package org.amoseman.steganography.ui.command;
 
-import org.amoseman.steganography.processing.parameters.ActionType;
+import org.amoseman.steganography.processing.parameters.ProcessingType;
 import org.amoseman.steganography.processing.parameters.ProcessingParameters;
 
 import java.util.Optional;
@@ -16,11 +16,11 @@ public class UserInterface {
     public static final String TARGET_ARG = ARG_PREFIX + "target";
 
 
-    public static ActionType fromCommand(String command) {
+    public static ProcessingType fromCommand(String command) {
         return switch (command) {
-            case ANALYZE -> ActionType.ANALYZE;
-            case ENCODE -> ActionType.ENCODE;
-            case DECODE -> ActionType.DECODE;
+            case ANALYZE -> ProcessingType.ANALYZE;
+            case ENCODE -> ProcessingType.ENCODE;
+            case DECODE -> ProcessingType.DECODE;
             default -> throw new IllegalArgumentException(String.format("Unknown command %s", command));
         };
     }
@@ -31,7 +31,7 @@ public class UserInterface {
         }
         String command = args[0];
         ProcessingParameters.Builder builder = new ProcessingParameters.Builder();
-        ActionType type = fromCommand(command);
+        ProcessingType type = fromCommand(command);
         args = reduce(1, args);
 
         int index = 0;

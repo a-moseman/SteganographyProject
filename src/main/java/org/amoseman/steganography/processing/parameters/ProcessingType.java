@@ -1,6 +1,7 @@
 package org.amoseman.steganography.processing.parameters;
 
-public enum ActionType {
+
+public enum ProcessingType {
     ANALYZE,
     ENCODE,
     DECODE

@@ -6,7 +6,7 @@ import java.util.Optional;
  * Represents the parameters for processing.
  */
 public class ProcessingParameters {
-    public final ActionType type;
+    public final ProcessingType type;
     public final boolean compression;
     public final Optional<String> password;
     public final String[] source;
@@ -21,7 +21,7 @@ public class ProcessingParameters {
      * @param source the source file paths that will be read from.
      * @param target the target file paths that will be written to.
      */
-    private ProcessingParameters(ActionType type, boolean compression, Optional<String> password, String[] source, String[] target) {
+    private ProcessingParameters(ProcessingType type, boolean compression, Optional<String> password, String[] source, String[] target) {
         this.type = type;
         this.compression = compression;
         this.password = password;
@@ -30,13 +30,13 @@ public class ProcessingParameters {
     }
 
     public static class Builder {
-        private ActionType type = null;
+        private ProcessingType type = null;
         private boolean compression = false;
         private Optional<String> password = Optional.empty();
         private String[] source = null;
         private String[] target = null;
 
-        public Builder setType(ActionType type) {
+        public Builder setType(ProcessingType type) {
             if (this.type != null) {
                 throw new IllegalArgumentException("Processing type already set.");
             }
@@ -86,7 +86,7 @@ public class ProcessingParameters {
             if (target.length == 0) {
                 throw new IllegalArgumentException("No path(s) were provided with the --target argument.");
             }
-            if (type == ActionType.ANALYZE) {
+            if (type == ProcessingType.ANALYZE) {
                 if (source != null) {
                     throw new IllegalArgumentException("The --source argument is not used with the analyze command.");
                 }
@@ -105,12 +105,12 @@ public class ProcessingParameters {
                     throw new IllegalArgumentException("No path(s) were provided with the --source argument");
                 }
             }
-            if (type == ActionType.ENCODE) {
+            if (type == ProcessingType.ENCODE) {
                 if (source.length > 1) {
                     throw new IllegalArgumentException("Encoding is one to many, but you provided multiple paths with --source.");
                 }
             }
-            if (type == ActionType.DECODE) {
+            if (type == ProcessingType.DECODE) {
                 if (target.length > 1) {
                     throw new IllegalArgumentException("Decoding is many to one, but you provided multiple paths with --target.");
                 }
