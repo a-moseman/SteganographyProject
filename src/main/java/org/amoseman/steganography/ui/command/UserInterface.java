@@ -1,132 +1,71 @@
 package org.amoseman.steganography.ui.command;
 
-import org.amoseman.steganography.processing.parameters.ProcessingType;
-import org.amoseman.steganography.processing.parameters.ProcessingParameters;
-
 /**
  * Provides command line argument parsing functionality.
  */
 public class UserInterface {
-    public static final String ANALYZE = "analyze";
-    public static final String ENCODE = "encode";
-    public static final String DECODE = "decode";
-    public static final String ARG_PREFIX = "--";
-    public static final String COMPRESSION_ARG = ARG_PREFIX + "compress";
-    public static final String PASSWORD_ARG = ARG_PREFIX + "password";
-    public static final String SOURCE_ARG = ARG_PREFIX + "source";
-    public static final String TARGET_ARG = ARG_PREFIX + "target";
+    private final ArgParser parser;
 
-
-    /**
-     * Convert a command string into a ProcessingType.
-     * @param command the command.
-     * @return the processing type.
-     */
-    public static ProcessingType fromCommand(String command) {
-        return switch (command) {
-            case ANALYZE -> ProcessingType.ANALYZE;
-            case ENCODE -> ProcessingType.ENCODE;
-            case DECODE -> ProcessingType.DECODE;
-            default -> throw new IllegalArgumentException(String.format("Unknown command %s", command));
-        };
+    public UserInterface() {
+        this.parser = new ArgParser.Builder()
+                .setPrefix("--")
+                .addCommand("encode")
+                .addCommand("decode")
+                .addCommand("analyze")
+                .addBoolean("compress")
+                .addVariable("password", false)
+                .addList("source", false)
+                .addList("target", true)
+                .build();
     }
 
-    /**
-     * Parse the provided arguments.
-     * @param args the arguments.
-     * @throws IllegalArgumentException if the arguments are invalid.
-     * @return the processing parameters.
-     */
-    public ProcessingParameters run(String... args) {
-        if (args.length == 0) {
-            throw new IllegalArgumentException("No arguments provided.");
-        }
-        String command = args[0];
-        ProcessingParameters.Builder builder = new ProcessingParameters.Builder();
-        ProcessingType type = fromCommand(command);
-        args = reduce(1, args);
-
-        int index = 0;
-
-        builder.setType(type);
-
-        while (index < args.length) {
-            String arg = args[index];
-            if (arg.startsWith(ARG_PREFIX)) {
-                index = applyArg(args, index, arg, builder);
-            }
-        }
-        return builder.build();
+    public Parameters run(String... args) {
+        Parameters parameters = parser.parse(args);
+        assertValid(parameters);
+        return parameters;
     }
 
-    private int applyArg(String[] args, int index, String arg, ProcessingParameters.Builder builder) {
-        return switch (arg) {
-            case COMPRESSION_ARG -> {
-                builder.enableCompression();
-                yield index + 1;
-            }
-            case PASSWORD_ARG -> {
-                if (index + 1 == args.length) {
-                    throw new IllegalArgumentException("Expected password");
+    private void assertValid(Parameters parameters) {
+        switch (parameters.command()) {
+            case "analyze" -> {
+                if (parameters.has("source")) {
+                    throw new IllegalArgumentException("The --source argument is not used for analyze.");
                 }
-                builder.setPassword(args[index + 1]);
-                yield index + 2;
-            }
-            case SOURCE_ARG -> {
-                if (index + 1 == args.length) {
-                    throw new IllegalArgumentException("Expected source path(s)");
+                if (parameters.has("compress")) {
+                    throw new IllegalArgumentException("The --compress argument is not used for analyze.");
                 }
-                String[] source = argsTillNextTag(args, index + 1);
-                builder.setSource(source);
-                yield index + source.length + 1;
-            }
-            case TARGET_ARG -> {
-                if (index + 1 == args.length) {
-                    throw new IllegalArgumentException("Expected target path(s)");
+                if (parameters.has("password")) {
+                    throw new IllegalArgumentException("The --password argument is not used for analyze.");
                 }
-                String[] target = argsTillNextTag(args, index + 1);
-                builder.setTarget(target);
-                yield index + target.length + 1;
             }
-            default -> throw new IllegalArgumentException(String.format("Unknown argument %s", arg));
-        };
-    }
-
-    /**
-     * Finds a subsequence of arguments between two arguments.
-     * @param args the arguments.
-     * @param start the starting index of subsequence.
-     * @return the subsequence.
-     */
-    public String[] argsTillNextTag(String[] args, int start) {
-        int end = args.length;
-        for (int i = start; i < args.length; i++) {
-            if (args[i].startsWith(ARG_PREFIX)) {
-                end = i;
-                break;
+            case "encode" -> {
+                if (!parameters.has("source")) {
+                    throw new IllegalArgumentException("The --source argument is required when encoding.");
+                }
+                if (parameters.get("source").length != 1) {
+                    throw new IllegalArgumentException("One file path is required for the --source argument when encoding.");
+                }
+                if (parameters.get("target").length == 0) {
+                    throw new IllegalArgumentException("At least one file path is required for the --target argument when encoding.");
+                }
+                if (!parameters.has("source")) {
+                    throw new IllegalArgumentException("The --source argument is required for encoding and decoding.");
+                }
+            }
+            case "decode" -> {
+                if (!parameters.has("source")) {
+                    throw new IllegalArgumentException("The --source argument is required when decoding.");
+                }
+                if (parameters.get("source").length == 0) {
+                    throw new IllegalArgumentException("At least one file path is required for the --source argument when decoding.");
+                }
+                if (parameters.get("target").length != 1) {
+                    throw new IllegalArgumentException("One file path is required for the --target argument when decoding.");
+                }
+                if (!parameters.has("source")) {
+                    throw new IllegalArgumentException("The --source argument is required for encoding and decoding.");
+                }
             }
         }
-        String[] sub = new String[end - start];
-        System.arraycopy(args, start, sub, 0, sub.length);
-        return sub;
-    }
-
-    /**
-     * Removes the first n arguments from the array of arguments.
-     * @param n the number of arguments to remove.
-     * @param args the arguments to reduce.
-     * @throws IllegalArgumentException if n is negative or the length of the reduced arguments would be negative.
-     * @return the reduced arguments.
-     */
-    public String[] reduce(int n, String... args) {
-        if (args.length - n < 0) {
-            throw new IllegalArgumentException("Can not reduce arguments to length less than 0.");
-        }
-        if (n < 0) {
-            throw new IllegalArgumentException("Can not reduce by a negative value.");
-        }
-        String[] reduced = new String[args.length - n];
-        System.arraycopy(args, n, reduced, 0, reduced.length);
-        return reduced;
     }
 }
