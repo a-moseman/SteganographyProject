@@ -5,6 +5,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Provides argument parsing functionality.
+ */
 public class ArgParser {
     public static final int BOOLEAN = 0;
     public static final int VARIABLE = 1;
@@ -14,6 +17,13 @@ public class ArgParser {
     private final Map<String, Integer> parameters;
     private final Set<String> required;
 
+    /**
+     * Instantiate an argument parser.
+     * @param prefix the prefix of parameters.
+     * @param commands the set of valid commands.
+     * @param parameters a map of parameter names and their expected value count.
+     * @param required a set of required parameters.
+     */
     private ArgParser(String prefix, Set<String> commands, Map<String, Integer> parameters, Set<String> required) {
         this.prefix = prefix;
         this.commands = commands;
@@ -21,6 +31,12 @@ public class ArgParser {
         this.required = required;
     }
 
+    /**
+     * Get the subset of the array of arguments of the range [1, n), where n is the length of the array of arguments.
+     * @param args the arguments.
+     * @throws IllegalArgumentException if the arguments are of length 0.
+     * @return the subset.
+     */
     public static String[] reduce(String... args) {
         int size = args.length - 1;
         if (size < 0) {
@@ -31,6 +47,12 @@ public class ArgParser {
         return reduced;
     }
 
+    /**
+     * Parse the provided arguments.
+     * @param args the arguments.
+     * @throws IllegalArgumentException if the arguments are invalid.
+     * @return the parsed arguments.
+     */
     public Parameters parse(String... args) {
         if (args.length == 0) {
             throw new IllegalArgumentException("No arguments provided.");
@@ -64,6 +86,15 @@ public class ArgParser {
         return parameters;
     }
 
+    /**
+     * Parse an argument.
+     * @param arg the argument.
+     * @param index the current index in the array of arguments.
+     * @param args the arguments.
+     * @param builder the parsed arguments builder.
+     * @throws IllegalArgumentException if the argument or its values are invalid.
+     * @return the next index.
+     */
     private int parseArgument(String arg, int index, String[] args, Parameters.Builder builder) {
         String name = arg.replaceFirst(prefix, "");
         if (!parameters.containsKey(name)) {
@@ -119,28 +150,51 @@ public class ArgParser {
         return index + values.length + 1;
     }
 
+    /**
+     * A builder for ArgParser.
+     */
     public static class Builder {
         private String prefix;
         private Set<String> commands;
         private Map<String, Integer> parameters;
         private Set<String> required;
 
+        /**
+         * Instantiate a builder.
+         */
         public Builder() {
             this.commands = new HashSet<>();
             this.parameters = new HashMap<>();
             this.required = new HashSet<>();
         }
 
+        /**
+         * Set the prefix.
+         * @param prefix the prefix.
+         * @return this.
+         */
         public Builder setPrefix(String prefix) {
             this.prefix = prefix;
             return this;
         }
 
+        /**
+         * Add a command.
+         * @param command the command.
+         * @return this.
+         */
         public Builder addCommand(String command) {
             commands.add(command);
             return this;
         }
 
+        /**
+         * Add a parameter.
+         * @param name the name of the parameter.
+         * @param size the number of values expected for the parameter; -1 if the size is not constant.
+         * @param isRequired whether the parameter is required or not.
+         * @return this.
+         */
         private Builder addParameter(String name, int size, boolean isRequired) {
             if (prefix == null) {
                 throw new RuntimeException("Prefix not set.");
@@ -168,6 +222,10 @@ public class ArgParser {
             return addParameter(name, LIST, isRequired);
         }
 
+        /**
+         * Build the ArgParser.
+         * @return the ArgParser.
+         */
         public ArgParser build() {
             return new ArgParser(prefix, commands, parameters, required);
         }

@@ -1,11 +1,14 @@
 package org.amoseman.steganography.ui.command;
 
 /**
- * Provides command line argument parsing functionality.
+ * Provides a user interface for the program.
  */
 public class UserInterface {
     private final ArgParser parser;
 
+    /**
+     * Instantiate a user interface.
+     */
     public UserInterface() {
         this.parser = new ArgParser.Builder()
                 .setPrefix("--")
@@ -19,12 +22,21 @@ public class UserInterface {
                 .build();
     }
 
+    /**
+     * Run the user interface on the provided arguments.
+     * @param args the arguments.
+     * @return the parsed parameters.
+     */
     public Parameters run(String... args) {
         Parameters parameters = parser.parse(args);
         assertValid(parameters);
         return parameters;
     }
 
+    /**
+     * Throw an IllegalArgumentException if the parameters are invalid.
+     * @param parameters the parameters.
+     */
     private void assertValid(Parameters parameters) {
         switch (parameters.command()) {
             case "analyze" -> {
