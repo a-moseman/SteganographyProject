@@ -91,7 +91,7 @@ public class ArgParser {
      * @param arg the argument.
      * @param index the current index in the array of arguments.
      * @param args the arguments.
-     * @param builder the parsed arguments builder.
+     * @param builder the Parameters builder.
      * @throws IllegalArgumentException if the argument or its values are invalid.
      * @return the next index.
      */
@@ -193,6 +193,7 @@ public class ArgParser {
          * @param name the name of the parameter.
          * @param size the number of values expected for the parameter; -1 if the size is not constant.
          * @param isRequired whether the parameter is required or not.
+         * @throws RuntimeException if the prefix is not set.
          * @return this.
          */
         private Builder addParameter(String name, int size, boolean isRequired) {
