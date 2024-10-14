@@ -5,6 +5,6 @@ import org.amoseman.steganography.ui.command.UserInterface;
 
 public class Main {
     public static void main(String[] args) {
-        Parameters parameters = new UserInterface().run(args);
+        Parameters parameters = new UserInterface().parse(args);
     }
 }

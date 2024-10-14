@@ -36,7 +36,7 @@ public class UserInterface {
      * @param args the arguments.
      * @return the parsed parameters.
      */
-    public Parameters run(String... args) {
+    public Parameters parse(String... args) {
         Parameters parameters = parser.parse(args);
         assertValid(parameters);
         return parameters;

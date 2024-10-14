@@ -10,32 +10,32 @@ class UserInterfaceTest {
     void run() {
         UserInterface ui = new UserInterface();
 
-        assertThrows(IllegalArgumentException.class, () -> ui.run());
-        assertThrows(IllegalArgumentException.class, () -> ui.run("encode"));
-        assertThrows(IllegalArgumentException.class, () -> ui.run("encode", "--source"));
-        assertThrows(IllegalArgumentException.class, () -> ui.run("encode", "--target"));
-        assertThrows(IllegalArgumentException.class, () -> ui.run("encode", "--source", "--target"));
-        assertThrows(IllegalArgumentException.class, () -> ui.run("encode", "--source", "a", "b", "--target", "a"));
+        assertThrows(IllegalArgumentException.class, () -> ui.parse());
+        assertThrows(IllegalArgumentException.class, () -> ui.parse("encode"));
+        assertThrows(IllegalArgumentException.class, () -> ui.parse("encode", "--source"));
+        assertThrows(IllegalArgumentException.class, () -> ui.parse("encode", "--target"));
+        assertThrows(IllegalArgumentException.class, () -> ui.parse("encode", "--source", "--target"));
+        assertThrows(IllegalArgumentException.class, () -> ui.parse("encode", "--source", "a", "b", "--target", "a"));
 
-        assertThrows(IllegalArgumentException.class, () -> ui.run("decode"));
-        assertThrows(IllegalArgumentException.class, () -> ui.run("decode", "--source"));
-        assertThrows(IllegalArgumentException.class, () -> ui.run("decode", "--target"));
-        assertThrows(IllegalArgumentException.class, () -> ui.run("decode", "--source", "--target"));
-        assertThrows(IllegalArgumentException.class, () -> ui.run("decode", "--source", "a", "--target", "a", "b"));
+        assertThrows(IllegalArgumentException.class, () -> ui.parse("decode"));
+        assertThrows(IllegalArgumentException.class, () -> ui.parse("decode", "--source"));
+        assertThrows(IllegalArgumentException.class, () -> ui.parse("decode", "--target"));
+        assertThrows(IllegalArgumentException.class, () -> ui.parse("decode", "--source", "--target"));
+        assertThrows(IllegalArgumentException.class, () -> ui.parse("decode", "--source", "a", "--target", "a", "b"));
 
-        assertThrows(IllegalArgumentException.class, () -> ui.run("encode", "--source", "a", "--target", "b", "--password"));
-        assertThrows(IllegalArgumentException.class, () -> ui.run("encode", "--source", "a", "--target", "b", "--password", "pass", "--compress", "--compress"));
-        assertThrows(IllegalArgumentException.class, () -> ui.run("analyze", "--source", "a", "--target", "b"));
-        assertThrows(IllegalArgumentException.class, () -> ui.run("analyze", "--target", "b", "--compress"));
-        assertThrows(IllegalArgumentException.class, () -> ui.run("analyze", "--target", "b", "--password", "pass"));
+        assertThrows(IllegalArgumentException.class, () -> ui.parse("encode", "--source", "a", "--target", "b", "--password"));
+        assertThrows(IllegalArgumentException.class, () -> ui.parse("encode", "--source", "a", "--target", "b", "--password", "pass", "--compress", "--compress"));
+        assertThrows(IllegalArgumentException.class, () -> ui.parse("analyze", "--source", "a", "--target", "b"));
+        assertThrows(IllegalArgumentException.class, () -> ui.parse("analyze", "--target", "b", "--compress"));
+        assertThrows(IllegalArgumentException.class, () -> ui.parse("analyze", "--target", "b", "--password", "pass"));
 
-        assertDoesNotThrow(() -> ui.run("encode", "--source", "a", "--target", "b", "c"));
-        assertDoesNotThrow(() -> ui.run("decode", "--source", "a", "b", "--target", "c"));
-        assertDoesNotThrow(() -> ui.run("encode", "--source", "a", "--target", "b", "c", "--password", "pass"));
-        assertDoesNotThrow(() -> ui.run("decode", "--source", "a", "b", "--target", "c", "--password", "pass"));
-        assertDoesNotThrow(() -> ui.run("encode", "--source", "a", "--target", "b", "c", "--password", "pass", "--compress"));
-        assertDoesNotThrow(() -> ui.run("decode", "--source", "a", "b", "--target", "c", "--password", "pass", "--compress"));
-        assertDoesNotThrow(() -> ui.run("analyze", "--target", "a"));
-        assertDoesNotThrow(() -> ui.run("analyze", "--target", "a", "b"));
+        assertDoesNotThrow(() -> ui.parse("encode", "--source", "a", "--target", "b", "c"));
+        assertDoesNotThrow(() -> ui.parse("decode", "--source", "a", "b", "--target", "c"));
+        assertDoesNotThrow(() -> ui.parse("encode", "--source", "a", "--target", "b", "c", "--password", "pass"));
+        assertDoesNotThrow(() -> ui.parse("decode", "--source", "a", "b", "--target", "c", "--password", "pass"));
+        assertDoesNotThrow(() -> ui.parse("encode", "--source", "a", "--target", "b", "c", "--password", "pass", "--compress"));
+        assertDoesNotThrow(() -> ui.parse("decode", "--source", "a", "b", "--target", "c", "--password", "pass", "--compress"));
+        assertDoesNotThrow(() -> ui.parse("analyze", "--target", "a"));
+        assertDoesNotThrow(() -> ui.parse("analyze", "--target", "a", "b"));
     }
 }
