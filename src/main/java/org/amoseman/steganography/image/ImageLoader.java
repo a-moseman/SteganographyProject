@@ -1,4 +1,4 @@
-package org.amoseman.image;
+package org.amoseman.steganography.image;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

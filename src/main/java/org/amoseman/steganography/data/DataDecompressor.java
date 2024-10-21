@@ -1,4 +1,4 @@
-package org.amoseman.data;
+package org.amoseman.steganography.data;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

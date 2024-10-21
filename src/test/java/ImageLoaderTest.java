@@ -1,4 +1,4 @@
-import org.amoseman.image.ImageLoader;
+import org.amoseman.steganography.image.ImageLoader;
 import org.junit.jupiter.api.Test;
 
 import java.awt.image.DataBuffer;

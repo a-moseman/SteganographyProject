@@ -1,5 +1,7 @@
 package org.amoseman.data;
 
+import org.amoseman.steganography.data.DataCompressor;
+import org.amoseman.steganography.data.DataDecompressor;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
